@@ -30,7 +30,7 @@ connect.commit()
 
 def get_calendar(MONTH, YEAR):
     return Calendar().itermonthdays(YEAR, MONTH)
-API_TOKEN = "6553729037:AAH_RXxoOp6TsRdI7Se6OtOJ3oHyGLGAbZM"
+API_TOKEN = "6553729037:AAE0rtNar9YV2bn4yAypG4Ho3yaR82HSi80"
 
 
 
@@ -197,9 +197,9 @@ def user_text(message):
     global information
     global add_mode
     global date
-    if message.text == "Пользователь":
-        role = "user"
-        bot.send_message(message.chat.id, text="Теперь вы пользователь.\nНажмите на кнопку календарь, чтобы выбрать дату дня, информацию которого вы хотите получить", reply_markup=info_markup)
+    # if message.text == "Пользователь":
+    #     role = "user"
+    #     bot.send_message(message.chat.id, text="Теперь вы пользователь.\nНажмите на кнопку календарь, чтобы выбрать дату дня, информацию которого вы хотите получить", reply_markup=info_markup)
     if add_mode == 1:
 
         if message.text != 'Да': information = message.text
@@ -220,6 +220,7 @@ def user_text(message):
 
     elif message.text == "Добавить":
         if check_isheadman(message.chat.id) == 1:
+            role = 'mod'
             if date != '':
                 bot.reply_to(message, text="Запишите необходимую информацию")
 
@@ -227,11 +228,13 @@ def user_text(message):
             else:
                 bot.send_message(message.chat.id, text='Вы еще не выбрали дату, сделайте это через команду календарь', reply_markup=info_markup)
         else:
+            role = 'user'
             bot.send_message(message.chat.id, text='У вас нат прав на такие команды', reply_markup=info_markup)
 
 
     elif message.text == "Да":
         if check_isheadman(message.chat.id) == 1:
+            role = 'mod'
             if information != '':
                 add_info(message.chat.id, date, information)
                 bot.send_message(message.chat.id, text="Информация добавлена\nДля дальнейших действий воспользуйтесь командой календарь", reply_markup=info_markup)
@@ -241,11 +244,13 @@ def user_text(message):
                 bot.send_message(message.chat.id, text="Сначала необходимо внести информацию, воспользуйтесь командой календарь", reply_markup=info_markup)
 
         else:
+            role = 'user'
             bot.send_message(message.chat.id, text='У вас нат прав на такие команды', reply_markup=info_markup)
 
 
     elif message.text == "Нет":
         if check_isheadman(message.chat.id) == 1:
+            role = 'mod'
             if information != '':
                 bot.send_message(message.chat.id, text="Возвращаем вас назад.", reply_markup=info_markup)
                 information = ''
@@ -254,20 +259,23 @@ def user_text(message):
                 bot.send_message(message.chat.id, text="Нечего отменять - вы еще не вносили информацию, воспользуйтесь командой календарь", reply_markup=info_markup)
 
         else:
+            role = 'user'
             bot.send_message(message.chat.id, text='У вас нат прав на такие команды', reply_markup=info_markup)
 
 
     elif message.text == 'Прочитать':
         if check_isheadman(message.chat.id) == 1:
+            role = 'mod'
             if date != '':
                 text_for_write = ''''''
                 for i in get_info(date):
                     text_for_write += f'\n{i}'
-                bot.send_message(message.chat.id, f'{text_for_write}')
+                bot.send_message(message.chat.id, f'{text_for_write}', reply_markup=info_markup)
             else:
                 bot.send_message(message.chat.id, text='Сначала необходимо выбрать дату, воспользуйтесь командой календарь', reply_markup=info_markup)
 
         else:
+            role = 'user'
             bot.send_message(message.chat.id, 'Вы пользователь и вам не нужна эта команда, выберите дату через календарь и вы получите информацию')
 
 
