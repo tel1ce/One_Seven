@@ -1,7 +1,24 @@
-import sqlite3, random
+import sqlite3
 
 connect = sqlite3.connect('db_mvp.db')
 cursor = connect.cursor()
+
+cursor.execute('''
+            CREATE TABLE IF NOT EXISTS INFO(
+                date CHAR,
+                info CHAR
+            );
+        ''')
+connect.commit()
+
+cursor.execute('''
+            CREATE TABLE IF NOT EXISTS USERS(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tgtoken STR,
+                isheadman INT
+            );
+        ''')
+connect.commit()
 
 def add_user(token='token', isheadman=0):
     connect = sqlite3.connect('db_mvp.db')
@@ -34,9 +51,11 @@ def check_isheadman(token='token'):
         SELECT isheadman FROM USERS WHERE tgtoken='{str(token)}';
     ''')
     connect.commit()
-    return cursor.fetchall()[0][0]
-
-#______________________________________________________               INFO
+    result = cursor.fetchall()
+    if result != []:
+        return result[0][0]
+    else:
+        return None
 
 def add_info_test(date='01.01.0001', info='info'):
     connect = sqlite3.connect('db_mvp.db')
@@ -61,10 +80,6 @@ def get_info(date):
         return all_info
     else:
         return False
-
-
-# print(get_info('17.11.2023'))
-
 
 def add_info(token, date, info):
     connect = sqlite3.connect('db_mvp.db')
@@ -104,8 +119,6 @@ def delete_info(token, date):
             ''')
         connect.commit()
 
-#_____________________________________________________
-
 def recreate_table(USERS=0, INFO=0):
     connect = sqlite3.connect('db_mvp.db')
     cursor = connect.cursor()
@@ -138,58 +151,18 @@ def recreate_table(USERS=0, INFO=0):
         ''')
         connect.commit()
 
-# def check_user_in_db(user_id):
-#     connect = sqlite3.connect('db_mvp.db')
-#     cursor = connect.cursor()
-#     print(user_id)
-#     cursor.execute(f'''
-#         SELECT id FROM USERS WHERE tgtoken='{str(user_id)}';
-#     ''')
-#     connect.commit()
-#     print(111)
-#     if cursor.fetchone() is None:
-#         return 0
-#     else:
-#         return 1
-
-
-
-
-
-
-
-# cursor.execute('''
-#             CREATE TABLE IF NOT EXISTS INFO(
-#                 date CHAR,
-#                 info CHAR
-#             );
-#         ''')
-# connect.commit()
-#
-# cursor.execute('''
-#             CREATE TABLE IF NOT EXISTS USERS(
-#                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-#                 tgtoken CHAR,
-#                 isheadman INT
-#             );
-#         ''')
-# connect.commit()
-
-
-
-
-
 def check_user(tg):
     connect = sqlite3.connect('db_mvp.db')
     cursor = connect.cursor()
     cursor.execute('SELECT tgtoken FROM USERS')
     connect.commit()
     result = cursor.fetchall()
-    for i in result:
-        if i[0] == str(tg):
-            return 0
-        else:
-            if i == result[-1]:
-                return 1
-
-# print(check_user('1195917490'))
+    if result != []:
+        for i in result:
+            if str(i[0]) == str(tg):
+                return 0
+            else:
+                if i == result[-1]:
+                    return 1
+    else:
+        return 1

@@ -1,0 +1,9 @@
+Index: 1.py
+===================================================================
+diff --git a/1.py b/1.py
+deleted file mode 100644
+--- a/1.py	(revision 320622b248625f2f4cfef393891bd51ac85c5fb0)
++++ /dev/null	(revision 320622b248625f2f4cfef393891bd51ac85c5fb0)
+@@ -1,1 +0,0 @@
+-a=12
+\ No newline at end of file

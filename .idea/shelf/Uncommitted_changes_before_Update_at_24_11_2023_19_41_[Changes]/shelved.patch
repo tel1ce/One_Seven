@@ -1,0 +1,13 @@
+Index: 1.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>a=12
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/1.py b/1.py
+--- a/1.py	(revision 320622b248625f2f4cfef393891bd51ac85c5fb0)
++++ b/1.py	(date 1697478850463)
+@@ -1,1 +1,0 @@
+-a=12
+\ No newline at end of file
