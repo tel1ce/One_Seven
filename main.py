@@ -183,7 +183,8 @@ def user_text(message):
     #     bot.send_message(message.chat.id, text="Теперь вы пользователь.\nНажмите на кнопку календарь, чтобы выбрать дату дня, информацию которого вы хотите получить", reply_markup=info_markup)
     if add_mode == 1:
 
-        if message.text != 'Да': information = message.text
+        if str(message.text) not in ['Да', 'Нет', 'Календарь', 'Добавить', 'Прочитать']:
+            information = message.text
 
         bot.reply_to(message, text=f"Вы добавили информацию: {information}. \nВы уверены?", reply_markup=add_final_markup)
 
