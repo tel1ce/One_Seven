@@ -1,3 +1,4 @@
+import time
 from calendar import Calendar
 import datetime
 from DB_FUNC import *
@@ -183,12 +184,12 @@ def user_text(message):
     #     bot.send_message(message.chat.id, text="Теперь вы пользователь.\nНажмите на кнопку календарь, чтобы выбрать дату дня, информацию которого вы хотите получить", reply_markup=info_markup)
     if add_mode == 1:
 
-        if str(message.text) not in ['Да', 'Нет', 'Календарь', 'Добавить', 'Прочитать']:
+        if str(message.text).lower() not in ['да', 'нет', 'календарь', 'добавить', 'прочитать']:
             information = message.text
 
-        bot.reply_to(message, text=f"Вы добавили информацию: {information}. \nВы уверены?", reply_markup=add_final_markup)
+            bot.reply_to(message, text=f"Вы добавили информацию: {information}. \nВы уверены?", reply_markup=add_final_markup)
 
-        add_mode = 0
+            add_mode = 0
 
     elif str(message.text).lower() == "календарь":
         if check_isheadman(message.chat.id) == 1:
@@ -263,7 +264,9 @@ def user_text(message):
             role = 'user'
             bot.send_message(message.chat.id, 'Вы пользователь и вам не нужна эта команда, выберите дату через календарь и вы получите информацию')
 
-bot.infinity_polling()
-
-if __name__ == "main":
-    pass
+if __name__ == '__main__':
+    while True:
+        try:
+            bot.polling(non_stop=True)
+        except Exception as e:
+            time.sleep(3)
