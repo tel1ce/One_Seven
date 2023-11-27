@@ -35,9 +35,12 @@ API_TOKEN = f"{TOKEN}"
 
 bot = TeleBot(API_TOKEN)
 
+# Обратная связь
+feedback_button = tbt.types.KeyboardButton(text="Обратная связь")
+
 # Функция info
 info_button = tbt.types.KeyboardButton(text="Календарь")
-info_markup = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True).add(info_button)
+info_markup = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True).add(info_button).add(feedback_button)
 # info_markup2 = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True).add(info_button)
 
 # Функции добавления и чтения
@@ -263,6 +266,10 @@ def user_text(message):
         else:
             role = 'user'
             bot.send_message(message.chat.id, 'Вы пользователь и вам не нужна эта команда, выберите дату через календарь и вы получите информацию')
+
+    elif message.text == "Обратная связь":
+        bot.reply_to(message, text="Вот ссылка на гугл-форму:"
+                                   "") # Вставьте сюда вашу ссылку (только так, чтобы она подсвечивалась)
 
 if __name__ == '__main__':
     while True:
