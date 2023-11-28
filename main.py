@@ -35,12 +35,9 @@ API_TOKEN = f"{TOKEN}"
 
 bot = TeleBot(API_TOKEN)
 
-
-feedback_button = tbt.types.KeyboardButton(text="Обратная связь")
 # Функция info
 info_button = tbt.types.KeyboardButton(text="Календарь")
 info_markup = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True).add(info_button)
-info_markup.add(feedback_button)
 # info_markup2 = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True).add(info_button)
 
 # Функции добавления и чтения
@@ -182,6 +179,9 @@ def user_text(message):
     global information
     global add_mode
     global date
+    # if message.text == "Пользователь":
+    #     role = "user"
+    #     bot.send_message(message.chat.id, text="Теперь вы пользователь.\nНажмите на кнопку календарь, чтобы выбрать дату дня, информацию которого вы хотите получить", reply_markup=info_markup)
     if add_mode == 1:
 
         if str(message.text).lower() not in ['да', 'нет', 'календарь', 'добавить', 'прочитать']:
@@ -199,6 +199,7 @@ def user_text(message):
         gen_calendar()
         bot.send_message(message.chat.id, text="Выберите день из календаря", reply_markup=calendar_markup)
 
+
     elif message.text == "Добавить":
         if check_isheadman(message.chat.id) == 1:
             role = 'mod'
@@ -211,6 +212,7 @@ def user_text(message):
         else:
             role = 'user'
             bot.send_message(message.chat.id, text='У вас нат прав на такие команды', reply_markup=info_markup)
+
 
     elif message.text == "Да":
         if check_isheadman(message.chat.id) == 1:
@@ -227,6 +229,7 @@ def user_text(message):
             role = 'user'
             bot.send_message(message.chat.id, text='У вас нат прав на такие команды', reply_markup=info_markup)
 
+
     elif message.text == "Нет":
         if check_isheadman(message.chat.id) == 1:
             role = 'mod'
@@ -240,6 +243,7 @@ def user_text(message):
         else:
             role = 'user'
             bot.send_message(message.chat.id, text='У вас нат прав на такие команды', reply_markup=info_markup)
+
 
     elif message.text == 'Прочитать':
         if check_isheadman(message.chat.id) == 1:
@@ -259,9 +263,6 @@ def user_text(message):
         else:
             role = 'user'
             bot.send_message(message.chat.id, 'Вы пользователь и вам не нужна эта команда, выберите дату через календарь и вы получите информацию')
-
-    elif message.text == "Обратная связь":
-        bot.reply_to(message, text="Вот ссылка на гугл-форму:\nhttps://forms.gle/FerrU3z9sWivUWfQ7")
 
 if __name__ == '__main__':
     while True:
