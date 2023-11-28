@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec051c1e-d65e-4b20-bbc7-6796b3259f74" name="Changes" comment="исправлена ошибка внесения информации (нужна доп проверка)">
+    <list default="true" id="ec051c1e-d65e-4b20-bbc7-6796b3259f74" name="Changes" comment="25.11.2023 исправлена ошибка с API">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TOKEN.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db_mvp.db" beforeDir="false" afterPath="$PROJECT_DIR$/db_mvp.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +101,14 @@
       <option name="project" value="LOCAL" />
       <updated>1700846158074</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="25.11.2023 исправлена ошибка с API">
+      <created>1700902108104</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1700902108105</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -122,6 +127,7 @@
     <MESSAGE value="0" />
     <MESSAGE value="24.11.2023 (бот на сервере)" />
     <MESSAGE value="исправлена ошибка внесения информации (нужна доп проверка)" />
-    <option name="LAST_COMMIT_MESSAGE" value="исправлена ошибка внесения информации (нужна доп проверка)" />
+    <MESSAGE value="25.11.2023 исправлена ошибка с API" />
+    <option name="LAST_COMMIT_MESSAGE" value="25.11.2023 исправлена ошибка с API" />
   </component>
 </project>
