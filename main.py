@@ -36,17 +36,43 @@ API_TOKEN = f"{TOKEN}"
 bot = TeleBot(API_TOKEN)
 
 feedback_button = tbt.types.KeyboardButton(text="Обратная связь")
+
+
 # Функция info
 info_button = tbt.types.KeyboardButton(text="Календарь")
 info_markup = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True).add(info_button)
 info_markup.add(feedback_button)
 
+
+refactor_private_info = tbt.types.KeyboardButton(text="Изменить приватную информацию")
+refactor_public_info = tbt.types.KeyboardButton(text="Изменить общую информацию")
+
 # Функции добавления и чтения
 add_info_button = tbt.types.KeyboardButton(text="Добавить")
+add_private_info_button = tbt.types.KeyboardButton(text="Добавить приватную информацию")
 read_info_button = tbt.types.KeyboardButton(text="Прочитать")
-add_read_markup = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(add_info_button, read_info_button)
+add_read_markup = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(add_private_info_button)
+add_read_markup.add(add_info_button, read_info_button)
+add_read_markup.add(refactor_public_info)
+add_read_markup.add(refactor_private_info)
+
+
+delete_button = tbt.types.KeyboardButton(text="Удалить")
+delete_markup = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(delete_button)
+
+
+add_private_info_button_user = tbt.types.KeyboardButton(text="Добавить приватную информацию")
+read_info_button_user = tbt.types.KeyboardButton(text="Прочитать")
+add_read_markup_user = tbt.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(add_private_info_button_user)
+add_read_markup_user.add(read_info_button_user)
+add_read_markup_user.add(refactor_private_info)
+
 
 add_mode = 0 # Находится ли пользователь в состоянии добавления информации? 0 или 1
+add_private_info_mode = 0
+refactor_private_info_mode = 0
+refactor_public_info_mode = 0
+type_add = ''
 
 # Подтверждение
 yes_button = tbt.types.KeyboardButton(text="Да")
@@ -70,23 +96,35 @@ month_names = {1:"Январь", 2:"Февраль", 3:"Март", 4:"Апрел
                5:"Май", 6:"Июнь", 7:"Июль", 8:"Август",
                9:"Сентябрь", 10:"Октябрь", 11:"Ноябрь", 12:"Декабрь"}
 
-def gen_calendar():
-    global calendar_markup
+def gen_calendar(token, type='FIRST'):
+    global calendar_markup, today, MONTH, YEAR
+
+    if type == 'FIRST':
+        MONTH = today[1]
+        DAY = today[2]
+        YEAR = today[0]
+
     calendar_markup = tbt.types.InlineKeyboardMarkup(keyboard=[])
     c = 1
     calendar_markup.row(tbt.types.InlineKeyboardButton(text=str(month_names[MONTH])+" "+str(YEAR), callback_data=" "))
     for day in get_calendar(MONTH, YEAR):
         if day == 0:
             day = " "
-        list_calendar_buttons.append(tbt.types.InlineKeyboardButton(text=day, callback_data=str(day)))
+
+        ch_date = str(f'{day}.{MONTH}.{YEAR}')
+        app_part = ''
+        if len(ch_date) >= 8:
+            if is_have_info(token, ch_date) == True:
+                app_part = '*'
+
+        list_calendar_buttons.append(tbt.types.InlineKeyboardButton(text=f'{day}{app_part}', callback_data=str(day)))
         if c == 7:
             c = 0
             lcb = list_calendar_buttons
             calendar_markup.row(lcb[0], lcb[1], lcb[2], lcb[3], lcb[4], lcb[5], lcb[6])
             list_calendar_buttons.clear()
         c += 1
-    calendar_markup.row(tbt.types.InlineKeyboardButton(text="<<", callback_data="<<"),
-                        tbt.types.InlineKeyboardButton(text=">>", callback_data=">>"))
+    calendar_markup.row(tbt.types.InlineKeyboardButton(text="<<", callback_data="<<"), tbt.types.InlineKeyboardButton(text=">>", callback_data=">>"))
 
 @bot.message_handler(commands=["start", "help"])
 def start_message(message):
@@ -103,16 +141,7 @@ def start_message(message):
         role = 'mod'
         bot.send_message(message.chat.id, text='С возвращением, текущая роль: дежурный\nВыберите дату через команду календарь', reply_markup=info_markup)
 
-@bot.message_handler(commands=["Календарь"])
-def mod_cmd(message):
-    global calendar_markup, role
-    if check_isheadman(message.chat.id) == 1:
-        role = 'mod'
-    else:
-        role = 'user'
-    gen_calendar()
-    bot.send_message(message.chat.id, text="Выберите день из календаря", reply_markup=calendar_markup)
-    calendar_markup = tbt.types.InlineKeyboardMarkup(keyboard=[])
+#
 
 @bot.callback_query_handler(lambda call: True)
 def answer(call):
@@ -135,22 +164,15 @@ def answer(call):
                 role = 'mod'
             else:
                 role = 'user'
+
+
             if role == "user":
-                bot.send_message(call.message.chat.id, text=f"Выбрана дата {d}.{m}.{YEAR}. Отправляем информацию:")# Все работает но может есть смысл сменить на date, убрал , reply_markup=add_read_markup
-
-                text_for_write = ''''''
-
-                if get_info(date) != False:
-                    for i in get_info(date):
-                        text_for_write += f'\n{i}'
-
-                    bot.send_message(call.message.chat.id, f'{text_for_write}')
-                    bot.send_message(call.message.chat.id, text='Для получения новой информации вы всегда можете снова выбрать команду календарь')
-                else:
-                    bot.send_message(call.message.chat.id, text='На эту дату нет информации')
+                bot.send_message(call.message.chat.id, text=f"Выбрана дата {date}. Что делать с информацией?", reply_markup=add_read_markup_user)
 
             elif role == "mod":
                 bot.send_message(call.message.chat.id, text=f"Выбрана дата {date}. Что делать с информацией?", reply_markup=add_read_markup)
+
+
     except ValueError:
         print("Excepted ValueError")
     if call.data == ">>":
@@ -161,7 +183,7 @@ def answer(call):
             DAY = 1
             MONTH = 1
             YEAR += 1
-        gen_calendar()
+        gen_calendar(call.message.chat.id, type='NEXT')
         bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.id, reply_markup=calendar_markup)
     elif call.data == "<<":
         if MONTH != 1:
@@ -171,34 +193,63 @@ def answer(call):
             DAY = 1
             MONTH = 12
             YEAR -= 1
-        gen_calendar()
+        gen_calendar(call.message.chat.id, type='NEXT')
         bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.id, reply_markup=calendar_markup)
 
 @bot.message_handler(content_types=['text'])
 def user_text(message):
     global role
     global information
-    global add_mode
-    global date
-    # if message.text == "Пользователь":
-    #     role = "user"
-    #     bot.send_message(message.chat.id, text="Теперь вы пользователь.\nНажмите на кнопку календарь, чтобы выбрать дату дня, информацию которого вы хотите получить", reply_markup=info_markup)
-    if add_mode == 1:
+    global add_mode, add_private_info_mode, type_add
+    global date, refactor_private_info_mode, refactor_public_info_mode, list_commands
 
-        if str(message.text).lower() not in ['да', 'нет', 'календарь', 'добавить', 'прочитать']:
-            information = message.text
 
-            bot.reply_to(message, text=f"Вы добавили информацию: {information}. \nВы уверены?", reply_markup=add_final_markup)
-
-            add_mode = 0
-
-    elif str(message.text).lower() == "календарь":
+    if str(message.text).lower() == "календарь":
         if check_isheadman(message.chat.id) == 1:
             role = 'mod'
         else:
             role = 'user'
-        gen_calendar()
+        gen_calendar(message.chat.id)
         bot.send_message(message.chat.id, text="Выберите день из календаря", reply_markup=calendar_markup)
+
+
+    elif message.text == 'Изменить приватную информацию':
+        text_for_write_2 = f'''{date} Текущая приватная информация\n'''
+        if get_private_info(message.chat.id, date) != False:
+            for i in get_private_info(message.chat.id, date):
+                text_for_write_2 += f'\n{i}'
+            bot.send_message(message.chat.id, f'{text_for_write_2}')
+
+            bot.send_message(message.chat.id, f'*Если хотите удалить информацию, воспользуйтесь соответствующей кнопкой*\nВведите новую приватную информацию:', reply_markup=delete_markup)
+            refactor_private_info_mode = 1
+
+        else:
+            bot.send_message(message.chat.id, f'На эту дату еще нет приватной информации', reply_markup=info_markup)
+
+
+    elif message.text == 'Изменить общую информацию':
+        text_for_write_2 = f'''{date} Текущая информация\n'''
+        if get_info(date) != False:
+            for i in get_info(date):
+                text_for_write_2 += f'\n{i}'
+            bot.send_message(message.chat.id, f'{text_for_write_2}')
+
+            bot.send_message(message.chat.id, f'*Если хотите удалить информацию, воспользуйтесь соответствующей кнопкой*\nВведите новую информацию:', reply_markup=delete_markup)
+            refactor_public_info_mode = 1
+
+        else:
+            bot.send_message(message.chat.id, f'На эту дату еще нет информации', reply_markup=info_markup)
+
+
+    elif message.text == 'Удалить':
+        if refactor_public_info_mode == 1:
+            delete_info(message.chat.id, date)
+            bot.send_message(message.chat.id, f'Информация успешно удалена', reply_markup=info_markup)
+            refactor_public_info_mode = 0
+        elif refactor_private_info_mode == 1:
+            delete_private_info(message.chat.id, date)
+            bot.send_message(message.chat.id, f'Информация успешно удалена', reply_markup=info_markup)
+            refactor_private_info_mode = 0
 
 
     elif message.text == "Добавить":
@@ -216,58 +267,106 @@ def user_text(message):
 
 
     elif message.text == "Да":
-        if check_isheadman(message.chat.id) == 1:
-            role = 'mod'
-            if information != '':
+        if information != '':
+
+            if type_add == 'private':
+                add_private_info(message.chat.id, date, information)
+                bot.send_message(message.chat.id, text="Приватная информация добавлена\nДля дальнейших действий воспользуйтесь командой календарь", reply_markup=info_markup)
+            elif type_add == 'public':
                 add_info(message.chat.id, date, information)
                 bot.send_message(message.chat.id, text="Информация добавлена\nДля дальнейших действий воспользуйтесь командой календарь", reply_markup=info_markup)
-                information = ''
-                date = ''
-            else:
-                bot.send_message(message.chat.id, text="Сначала необходимо внести информацию, воспользуйтесь командой календарь", reply_markup=info_markup)
+            elif type_add == 'refactor_private':
+                change_private_info(message.chat.id, date, information)
+                bot.send_message(message.chat.id,text="Приватная информация изменена\nДля дальнейших действий воспользуйтесь командой календарь", reply_markup=info_markup)
+            elif type_add == 'refactor_public':
+                change_public_info(message.chat.id, date, information)
+                bot.send_message(message.chat.id,text="Информация изменена\nДля дальнейших действий воспользуйтесь командой календарь", reply_markup=info_markup)
 
+            information = ''
+            date = ''
+            add_mode = 0
+            add_private_info_mode = 0
+            type_add = ''
         else:
-            role = 'user'
-            bot.send_message(message.chat.id, text='У вас нат прав на такие команды', reply_markup=info_markup)
+            bot.send_message(message.chat.id, text="Сначала необходимо внести информацию, воспользуйтесь командой календарь", reply_markup=info_markup)
 
 
     elif message.text == "Нет":
-        if check_isheadman(message.chat.id) == 1:
-            role = 'mod'
-            if information != '':
-                bot.send_message(message.chat.id, text="Возвращаем вас назад.", reply_markup=info_markup)
-                information = ''
-                date = ''
-            else:
-                bot.send_message(message.chat.id, text="Нечего отменять - вы еще не вносили информацию, воспользуйтесь командой календарь", reply_markup=info_markup)
-
+        if information != '':
+            bot.send_message(message.chat.id, text="Возвращаем вас назад.", reply_markup=info_markup)
+            information = ''
+            date = ''
+            add_mode = 0
+            add_private_info_mode = 0
         else:
-            role = 'user'
-            bot.send_message(message.chat.id, text='У вас нат прав на такие команды', reply_markup=info_markup)
+            bot.send_message(message.chat.id, text="Нечего отменять - вы еще не вносили информацию, воспользуйтесь командой календарь", reply_markup=info_markup)
 
 
     elif message.text == 'Прочитать':
-        if check_isheadman(message.chat.id) == 1:
-            role = 'mod'
-            if date != '':
-                text_for_write = ''''''
-                if get_info(date) != False:
-                    for i in get_info(date):
-                        text_for_write += f'\n{i}'
-                    bot.send_message(message.chat.id, f'{text_for_write}', reply_markup=info_markup)
-                else:
-                    bot.send_message(message.chat.id, f'На эту дату нет информации', reply_markup=info_markup)
-                    date = ''
-            else:
-                bot.send_message(message.chat.id, text='Сначала необходимо выбрать дату, воспользуйтесь командой календарь', reply_markup=info_markup)
+        back_mode = ''
+        if date != '':
+            text_for_write_1 = f'''{date} Общая информация\n'''
+            if get_info(date) != False:
+                for i in get_info(date):
+                    text_for_write_1 += f'\n{i}'
+                bot.send_message(message.chat.id, f'{text_for_write_1}', reply_markup=info_markup)
 
+            text_for_write_2 = f'''{date} Приватная информация\n'''
+            if get_private_info(message.chat.id, date) != False:
+                for i in get_private_info(message.chat.id, date):
+                    text_for_write_2 += f'\n{i}'
+                bot.send_message(message.chat.id, f'{text_for_write_2}', reply_markup=info_markup)
+
+            if get_info(date) == False and get_private_info(message.chat.id, date) == False:
+                bot.send_message(message.chat.id, f'На эту дату нет информации', reply_markup=info_markup)
+                date = ''
         else:
-            role = 'user'
-            bot.send_message(message.chat.id, 'Вы пользователь и вам не нужна эта команда, выберите дату через календарь и вы получите информацию')
+            bot.send_message(message.chat.id, text='Сначала необходимо выбрать дату, воспользуйтесь командой календарь', reply_markup=info_markup)
 
 
     elif message.text == "Обратная связь":
         bot.reply_to(message, text="Вот ссылка на гугл-форму:\nhttps://forms.gle/FerrU3z9sWivUWfQ7")
+
+
+    elif message.text == 'Добавить приватную информацию':
+        if date != '':
+            bot.reply_to(message, text="Запишите приватную информацию")
+            add_private_info_mode = 1
+        else:
+            bot.send_message(message.chat.id, text='Вы еще не выбрали дату, сделайте это через команду календарь', reply_markup=info_markup)
+
+
+    elif add_mode == 1:
+        if str(message.text).lower() not in ['да', 'нет', 'календарь', 'добавить', 'прочитать', 'добавить приватную информацию', 'назад', 'удалить']:
+            information = message.text
+            bot.reply_to(message, text=f"На {date} вы добавили информацию: \n{information}\nВы уверены?", reply_markup=add_final_markup)
+            add_mode = 0
+            type_add = 'public'
+
+
+    elif refactor_private_info_mode == 1:
+        if str(message.text).lower() not in ['да', 'нет', 'календарь', 'добавить', 'прочитать', 'добавить приватную информацию', 'назад', 'удалить']:
+            information = message.text
+            bot.reply_to(message, text=f"На {date} вы хотите поменять информацию на:\n{information}\nВы уверены?", reply_markup=add_final_markup)
+            refactor_private_info_mode = 0
+            type_add = 'refactor_private'
+
+
+    elif refactor_public_info_mode == 1:
+        if str(message.text).lower() not in ['да', 'нет', 'календарь', 'добавить', 'прочитать', 'добавить приватную информацию', 'назад', 'удалить']:
+            information = message.text
+            bot.reply_to(message, text=f"На {date} вы хотите поменять информацию на:\n{information}\nВы уверены?", reply_markup=add_final_markup)
+            refactor_public_info_mode = 0
+            type_add = 'refactor_public'
+
+
+    elif add_private_info_mode == 1:
+        if str(message.text).lower() not in ['да', 'нет', 'календарь', 'добавить', 'прочитать', 'добавить приватную информацию', 'назад', 'удалить']:
+            information = message.text
+            bot.reply_to(message, text=f"На {date} вы добавили информацию:\n{information}\nВы уверены?", reply_markup=add_final_markup)
+            add_private_info_mode = 0
+            type_add = 'private'
+
 
 if __name__ == '__main__':
     while True:

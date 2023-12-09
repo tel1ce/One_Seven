@@ -12,6 +12,15 @@ cursor.execute('''
 connect.commit()
 
 cursor.execute('''
+            CREATE TABLE IF NOT EXISTS PRIVATE_INFO(
+                tgtoken STR,
+                date CHAR,
+                info CHAR
+            );
+        ''')
+connect.commit()
+
+cursor.execute('''
             CREATE TABLE IF NOT EXISTS USERS(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 tgtoken STR,
@@ -119,6 +128,14 @@ def delete_info(token, date):
             ''')
         connect.commit()
 
+def delete_private_info(token, date):
+    connect = sqlite3.connect('db_mvp.db')
+    cursor = connect.cursor()
+    cursor.execute(f'''
+            DELETE FROM PRIVATE_INFO WHERE date='{date}' and tgtoken='{str(token)}';
+        ''')
+    connect.commit()
+
 def recreate_table(USERS=0, INFO=0):
     connect = sqlite3.connect('db_mvp.db')
     cursor = connect.cursor()
@@ -166,3 +183,75 @@ def check_user(tg):
                     return 1
     else:
         return 1
+
+def is_have_info(token, date):
+    connect = sqlite3.connect('db_mvp.db')
+    cursor = connect.cursor()
+    n = 0
+    cursor.execute(f'''
+        SELECT info FROM INFO WHERE date='{date}';
+    ''')
+    connect.commit()
+    if cursor.fetchall() != []: n+=1
+
+    cursor.execute(f'''
+            SELECT info FROM PRIVATE_INFO WHERE date='{date}' AND tgtoken='{str(token)}';
+        ''')
+    connect.commit()
+    if cursor.fetchall() != []: n += 1
+
+    if n == 0: return False
+    else: return True
+
+def add_private_info(token, date, info):
+    connect = sqlite3.connect('db_mvp.db')
+    cursor = connect.cursor()
+    cursor.execute(f'''
+        INSERT INTO PRIVATE_INFO(tgtoken, date, info) VALUES('{token}', '{date}', '{info}');
+    ''')
+    connect.commit()
+
+def get_private_info(token, date):
+    connect = sqlite3.connect('db_mvp.db')
+    cursor = connect.cursor()
+    all_info = []
+    cursor.execute(f'''
+        SELECT info FROM PRIVATE_INFO WHERE tgtoken='{str(token)}' AND date='{date}';
+    ''')
+    connect.commit()
+    for i in cursor.fetchall():
+        all_info.append(i[0])
+
+    if len(all_info) != 0:
+        return all_info
+    else:
+        return False\
+
+def change_private_info(token, date, info):
+    connect = sqlite3.connect('db_mvp.db')
+    cursor = connect.cursor()
+    cursor.execute(f'''
+            DELETE FROM PRIVATE_INFO WHERE tgtoken='{str(token)}' AND date='{date}';
+        ''')
+    connect.commit()
+
+    cursor.execute(f'''
+                INSERT INTO PRIVATE_INFO(tgtoken, date, info) VALUES('{str(token)}', '{date}', '{info}');
+            ''')
+    connect.commit()
+
+def change_public_info(token, date, info):
+    connect = sqlite3.connect('db_mvp.db')
+    cursor = connect.cursor()
+    if check_isheadman(token) == 0:
+        return False
+    else:
+        cursor.execute(f'''
+                    DELETE FROM INFO WHERE date='{date}';
+                ''')
+        connect.commit()
+
+        cursor.execute(f'''
+                        INSERT INTO INFO(date, info) VALUES('{date}', '{info}');
+                    ''')
+        connect.commit()

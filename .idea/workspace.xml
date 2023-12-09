@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec051c1e-d65e-4b20-bbc7-6796b3259f74" name="Changes" comment="добавлена кнопка обратной связи" />
+    <list default="true" id="ec051c1e-d65e-4b20-bbc7-6796b3259f74" name="Changes" comment="добавлена кнопка обратной связи">
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB_FUNC.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB_FUNC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db_mvp.db" beforeDir="false" afterPath="$PROJECT_DIR$/db_mvp.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -112,7 +118,14 @@
       <option name="project" value="LOCAL" />
       <updated>1701190564622</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="добавлена кнопка обратной связи">
+      <created>1701190795887</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1701190795887</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
