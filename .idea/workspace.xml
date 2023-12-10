@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec051c1e-d65e-4b20-bbc7-6796b3259f74" name="Changes" comment="добавлена кнопка обратной связи">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+    <list default="true" id="ec051c1e-d65e-4b20-bbc7-6796b3259f74" name="Changes" comment="09.12.2023 (добавлено: *, приватная информация, изменение/удаление информации)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB_FUNC.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB_FUNC.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db_mvp.db" beforeDir="false" afterPath="$PROJECT_DIR$/db_mvp.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -125,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1701190795887</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="09.12.2023 (добавлено: *, приватная информация, изменение/удаление информации)">
+      <created>1702141951597</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1702141951597</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -146,6 +151,7 @@
     <MESSAGE value="исправлена ошибка внесения информации (нужна доп проверка)" />
     <MESSAGE value="25.11.2023 исправлена ошибка с API" />
     <MESSAGE value="добавлена кнопка обратной связи" />
-    <option name="LAST_COMMIT_MESSAGE" value="добавлена кнопка обратной связи" />
+    <MESSAGE value="09.12.2023 (добавлено: *, приватная информация, изменение/удаление информации)" />
+    <option name="LAST_COMMIT_MESSAGE" value="09.12.2023 (добавлено: *, приватная информация, изменение/удаление информации)" />
   </component>
 </project>
