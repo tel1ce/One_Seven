@@ -29,6 +29,16 @@ cursor.execute('''
         ''')
 connect.commit()
 
+def update_counter():
+    counter = 0
+    with open('counter.txt', 'r') as r:
+        counter = r.readline()
+        counter = int(counter.strip())
+        counter += 1
+
+        with open('counter.txt', 'w') as w:
+            w.write(str(counter))
+
 def add_user(token='token', isheadman=0):
     connect = sqlite3.connect('db_mvp.db')
     cursor = connect.cursor()

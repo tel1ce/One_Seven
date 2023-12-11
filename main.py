@@ -375,8 +375,8 @@ def user_text(message):
 
 
     elif message.text == 'Прочитать':
+        update_counter()
         list_to_command = []
-        back_mode = ''
         if date != '':
             text_for_write_1 = f'''{date} Общая информация\n'''
             if get_info(date) != False:
